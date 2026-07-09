@@ -8,7 +8,6 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 
 from astrbot.api.all import *
-from astrbot.api.provider import ProviderRequest
 from astrbot.api.star import StarTools
 
 # ================= 静态常量 =================
@@ -62,9 +61,14 @@ class FanqieZerasosPlugin(Star):
                     nid, summary = part.split(sep, 1)
                     self.novel_summaries[nid.strip()] = summary.strip()
         
-        # 解析知识库名称列表
-        raw_kb = str(self.config.get("kb_names", ""))
-        self.kb_names = [k.strip() for k in raw_kb.split(",") if k.strip()]
+        # 解析知识库名称列表（支持前端返回的 list 或字符串格式）
+        raw_kb = self.config.get("kb_names", [])
+        if isinstance(raw_kb, str):
+            self.kb_names = [k.strip() for k in raw_kb.split(",") if k.strip()]
+        elif isinstance(raw_kb, list):
+            self.kb_names = [str(k).strip() for k in raw_kb if k]
+        else:
+            self.kb_names = []
 
     def on_config_update(self, config: dict):
         """WebUI 修改配置后的热重载"""
@@ -387,6 +391,9 @@ class FanqieZerasosPlugin(Star):
             )
 
         prompt += ("\n【要求】：请根据我设置的人格设定进行播报。"
+                   "你是一位追更这部小说的读者（以设定人格的口吻），"
+                   "阅读最新章节后做出反应——惊讶、吐槽、兴奋、担忧都可以，像读者看完新一章后的自然反应。"
+                   "不要以高高在上的角度做总结分析或评价，不要当旁白 narrator。"
                    "直接输出播报语，禁止输出任何 Markdown，禁止自我介绍。"
                    "在输出群播报时，开头包含小说名和章节名以便群友知道更新了哪本。")
 
