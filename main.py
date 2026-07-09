@@ -108,7 +108,11 @@ class FanqieZerasosPlugin(Star):
 
     @command("fanqie force")
     async def fanqie_force(self, event: AstrMessageEvent):
-        if str(event.message_obj.sender.user_id) != self.admin_qq: return
+        sender = str(event.message_obj.sender.user_id)
+        logging.info(f"[番茄监控-DEBUG] /fanqie force 被触发! 发送者={sender}, admin_qq={self.admin_qq}")
+        if sender != self.admin_qq:
+            logging.warning(f"[番茄监控-DEBUG] admin_qq 不匹配! 发送者={sender}, admin_qq={self.admin_qq}")
+            return
         yield event.plain_result(f"收到指令，正在强制拉取 {len(self.novel_ids)} 本番茄小说状态...")
         debug_msg, preview_msg = await self.do_check_and_notify(is_debug=True)
         yield event.plain_result(debug_msg)
@@ -155,7 +159,11 @@ class FanqieZerasosPlugin(Star):
 
     @command("fanqie reset")
     async def fanqie_reset(self, event: AstrMessageEvent):
-        if str(event.message_obj.sender.user_id) != self.admin_qq: return
+        sender = str(event.message_obj.sender.user_id)
+        logging.info(f"[番茄监控-DEBUG] /fanqie reset 被触发! 发送者={sender}, admin_qq={self.admin_qq}")
+        if sender != self.admin_qq:
+            logging.warning(f"[番茄监控-DEBUG] admin_qq 不匹配! 发送者={sender}, admin_qq={self.admin_qq}")
+            return
         self.data["chapter_states"] = {}
         self.data["chapter_history"] = {}
         await self._save_data()
