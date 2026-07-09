@@ -1,0 +1,10 @@
+# 插件名称 (唯一标识，尽量用英文小写和下划线)
+name: fanqie_zerasos_bot
+# 插件中文名
+desc: 番茄更新监控与泽拉索斯播报
+# 帮助信息文本
+help: "发送 `/fanqie help` 获取帮助"
+# 版本号
+version: "1.0.0"
+# 作者
+author: "opaup"

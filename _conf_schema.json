@@ -1,0 +1,38 @@
+{
+	"admin_qq": {
+		"type": "string",
+		"description": "最高管理员QQ号",
+		"hint": "拥有发送 /fanqie 等控制指令的最高权限。",
+		"obvious_hint": true,
+		"default": "123456789"
+	},
+	"novel_ids": {
+		"type": "string",
+		"description": "番茄小说ID列表",
+		"hint": "填入小说网页链接末尾的纯数字ID。支持同时监控多本小说，请用英文逗号 (,) 隔开。",
+		"obvious_hint": true,
+		"default": "7656265450392669208"
+	},
+	"check_interval": {
+		"type": "int",
+		"description": "检查间隔时间(分钟)",
+		"hint": "后台自动轮询番茄小说的间隔分钟数（默认 10 分钟）。",
+		"obvious_hint": true,
+		"default": 10
+	},
+	"novel_summaries": {
+		"type": "string",
+		"description": "各小说剧情概要（自定义）",
+		"hint": "格式：novelid:{小说过去剧情概要},novelid2:{概要2}。AI播报时会参考此内容。不同小说ID保存不同概要。",
+		"obvious_hint": true,
+		"default": ""
+	},
+	"persona_id": {
+		"type": "string",
+		"description": "选择播报人格",
+		"hint": "选择在后台播报更新时，所使用的 AstrBot 人格设定。如果不选，则默认以普通助手口吻播报。",
+		"obvious_hint": true,
+		"default": "",
+		"_special": "select_persona"
+	}
+}
