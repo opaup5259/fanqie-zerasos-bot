@@ -27,6 +27,13 @@
 		"obvious_hint": true,
 		"default": ""
 	},
+	"kb_names": {
+		"type": "string",
+		"description": "要检索的知识库名称（逗号分隔）",
+		"hint": "填入AstrBot知识库名称，多个用英文逗号隔开。播报时会自动检索知识库中与小说相关的内容作为上下文。留空则不检索。",
+		"obvious_hint": true,
+		"default": ""
+	},
 	"persona_id": {
 		"type": "string",
 		"description": "选择播报人格",

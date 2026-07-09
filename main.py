@@ -61,6 +61,10 @@ class FanqieZerasosPlugin(Star):
                 if sep in part:
                     nid, summary = part.split(sep, 1)
                     self.novel_summaries[nid.strip()] = summary.strip()
+        
+        # 解析知识库名称列表
+        raw_kb = str(self.config.get("kb_names", ""))
+        self.kb_names = [k.strip() for k in raw_kb.split(",") if k.strip()]
 
     def on_config_update(self, config: dict):
         """WebUI 修改配置后的热重载"""
@@ -347,6 +351,30 @@ class FanqieZerasosPlugin(Star):
                 snippet = ch_content[:200] if ch_content else "（无正文记录）"
                 prompt += f"- {ch_title}：{snippet}\n"
             prompt += "=== 回顾结束 ===\n"
+
+        # 知识库检索
+        if self.kb_names and hasattr(self.context, 'kb_manager') and self.context.kb_manager:
+            try:
+                kb_query = f"{novel_title} {chapter_info['title']} {chapter_detail_title}"
+                debug.append(f"[AI-DEBUG] 正在检索知识库: {self.kb_names}, 查询: {kb_query[:50]}...")
+                kb_result = await self.context.kb_manager.retrieve(
+                    query=kb_query,
+                    kb_names=self.kb_names,
+                    top_k_fusion=20,
+                    top_m_final=5
+                )
+                if kb_result and kb_result.get("context_text"):
+                    kb_text = kb_result["context_text"]
+                    prompt += f"\n=== 以下为知识库中检索到的相关内容 ===\n{kb_text}\n=== 知识库内容结束 ===\n"
+                    debug.append(f"[AI-DEBUG] ✅ 知识库检索成功，返回 {len(kb_text)} 字符")
+                else:
+                    debug.append(f"[AI-DEBUG] ⚠️ 知识库检索无结果")
+            except Exception as e:
+                debug.append(f"[AI-DEBUG] ❌ 知识库检索异常: {type(e).__name__}: {e}")
+        elif not self.kb_names:
+            debug.append(f"[AI-DEBUG] kb_names 未配置，跳过知识库检索")
+        else:
+            debug.append(f"[AI-DEBUG] kb_manager 不可用，跳过知识库检索")
 
         if content:
             snippet = content[:600]
